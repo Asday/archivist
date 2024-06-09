@@ -1,0 +1,27 @@
+#!/bin/bash
+
+COMMAND=$(cat <<EOF
+yt-dlp \
+  --download-archive archive.txt \
+  --cookies ~/ytdl.txt \
+  --ignore-errors \
+  --concurrent-fragments 4 \
+  --write-description \
+  --embed-info-json \
+  --write-info-json \
+  --embed-thumbnail \
+  --write-thumbnail \
+  --write-comments \
+  --embed-subs \
+  --sub-langs all \
+  --match-filter '!is_live'
+EOF
+)
+TIMESERIES=$(cat <<EOF
+-o '%(upload_date)s %(channel)s - %(title).100B [%(id)s].%(ext)s'
+EOF
+)
+
+test -e timeseries && COMMAND="$COMMAND $TIMESERIES"
+
+bash -c "$COMMAND $(cat what.txt)"
